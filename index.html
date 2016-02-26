@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Slidify</title>
+  <meta charset="utf-8">
+  <meta name="description" content="Slidify">
+  <meta name="author" content="Siti Nurillah Binti Mohd Fadzil">
+  <meta name="generator" content="slidify" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/default.css" media="all" >
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/phone.css" 
+    media="only screen and (max-device-width: 480px)" >
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/slidify.css" >
+  <link rel="stylesheet" href="libraries/highlighters/highlight.js/css/tomorrow.css" />
+  <base target="_blank"> <!-- This amazingness opens all links in a new tab. -->  
+  
+  <!-- Grab CDN jQuery, fall back to local if offline -->
+  <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.min.js"></script>
+  <script>window.jQuery || document.write('<script src="libraries/widgets/quiz/js/jquery.js"><\/script>')</script> 
+  <script data-main="libraries/frameworks/io2012/js/slides" 
+    src="libraries/frameworks/io2012/js/require-1.0.8.min.js">
+  </script>
+  
+  
+
+</head>
+<body style="opacity: 0">
+  <slides class="layout-widescreen">
+    
+    <!-- LOGO SLIDE -->
+        <slide class="title-slide segue nobackground">
+  <hgroup class="auto-fadein">
+    <h1>Slidify</h1>
+    <h2>Developing Data Products</h2>
+    <p>Siti Nurillah Binti Mohd Fadzil<br/></p>
+  </hgroup>
+  <article></article>  
+</slide>
+    
+
+    <!-- SLIDES -->
+    <slide class="" id="slide-1" style="background:;">
+  <hgroup>
+    <h2>Who would use this?</h2>
+  </hgroup>
+  <article data-timings="">
+    <ul>
+<li>JohorDT have been dominant in the Super League Malaysia 2015. They are 6 points clear and have a game in hand, with just 10 games left.</li>
+<li>However, they still have some tricky games coming up including Pahang and Terengganu.</li>
+<li>Football fans would be able to see easily how many points Johor DT will end up on by predicting the results of their remaining games.</li>
+<li>They can then see how many points their team would still require to win the league.</li>
+<li>Something like this could be expanded to include all remaining Super League Malaysia fixtures.</li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="class" id="id" style="background:#ECF9F9;">
+  <hgroup>
+    <h2>The ui.R file</h2>
+  </hgroup>
+  <article data-timings="">
+    <ul>
+<li>It uses the fluidPage layout.</li>
+<li>Then, to ensure all the information is not crammed onto one page, the tabsetPanel has been used to effectively put multiple pages all on one page.</li>
+<li>Radio buttons have been used instead of a select menu. This means the user can change their choices even quicker than with select boxes.</li>
+</ul>
+
+<pre><code class="r">radioButtons(&quot;Pahang&quot;, &quot;15/03 - JohorDT vs Pahang&quot;,
+                                              c(&quot;JohorDT Win&quot; = &quot;win&quot;,
+                                                &quot;Draw&quot; = &quot;draw&quot;,
+                                                &quot;JohorDT Loss&quot; = &quot;loss&quot;), inline=TRUE)
+</code></pre>
+
+<ul>
+<li>The results are just shown as lines of text. The presentation here is very basic but the information is still clearly conveyed.</li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="class" id="id" style="background:#ECF9F9;">
+  <hgroup>
+    <h2>The server.R file</h2>
+  </hgroup>
+  <article data-timings="">
+    <ul>
+<li>Makes use of the renderDataTable function. This means that the results can be stored in server.R as a data frame for easy R calculation.</li>
+</ul>
+
+<pre><code class="r">output$lTable &lt;- renderDataTable(leagueTable, options=list(paging = FALSE, 
+                                                           searching = FALSE))
+</code></pre>
+
+<ul>
+<li>Turning a radio buttin input from text into a number is not trivial and the switch function must be used.</li>
+</ul>
+
+<pre><code class="r">Pahang &lt;- reactive({
+                        switch(input$Pahang, &quot;win&quot; = 3, 
+                                                  &quot;draw&quot; = 1, 
+                                                  &quot;loss&quot; = 0)
+                })
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="class" id="id" style="background:#ECF9F9;">
+  <hgroup>
+    <h2>The Calculations</h2>
+  </hgroup>
+  <article data-timings="">
+    <ul>
+<li>The points are assigned to each fixture similarly to this. Then JohorDT&#39;s total points are calculated:</li>
+</ul>
+
+<pre><code class="r">Pahang &lt;- 3; Selangor &lt;- 1; Terengganu &lt;- 3; FeldaUnited &lt;- 3; PDRM &lt;- 0; LIONS &lt;- 1; 
+PerakFA &lt;- 3; Kelantan &lt;- 3; Sarawak &lt;- 1; ATM &lt;- 3; SimeDarby &lt;- 3
+</code></pre>
+
+<pre><code class="r">totPoints &lt;- 63 + Pahang + Selangor + Terengganu + FeldaUnited + PDRM + LIONS + PerakFA + 
+        Kelantan + Sarawak + ATM + SimeDarby; totPoints
+</code></pre>
+
+<pre><code>## [1] 87
+</code></pre>
+
+<ul>
+<li>And then the points another team (eg Pahang) requires to win can be calculated</li>
+</ul>
+
+<pre><code class="r">Pahang &lt;- 64 + totPoints - 28; Pahang
+</code></pre>
+
+<pre><code>## [1] 123
+</code></pre>
+
+<ul>
+<li>Currently, the numbers are all put in manually and are not fetched from the data frame. This functionality could be added as the app is further developed.</li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+    <slide class="backdrop"></slide>
+  </slides>
+  <div class="pagination pagination-small" id='io2012-ptoc' style="display:none;">
+    <ul>
+      <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=1 title='Who would use this?'>
+         1
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=2 title='The ui.R file'>
+         2
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=3 title='The server.R file'>
+         3
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=4 title='The Calculations'>
+         4
+      </a>
+    </li>
+  </ul>
+  </div>  <!--[if IE]>
+    <script 
+      src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js">  
+    </script>
+    <script>CFInstall.check({mode: 'overlay'});</script>
+  <![endif]-->
+</body>
+  <!-- Load Javascripts for Widgets -->
+  
+  <!-- LOAD HIGHLIGHTER JS FILES -->
+  <script src="libraries/highlighters/highlight.js/highlight.pack.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  <!-- DONE LOADING HIGHLIGHTER JS FILES -->
+   
+  </html>
