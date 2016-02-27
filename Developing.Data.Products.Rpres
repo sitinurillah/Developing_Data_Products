@@ -1,0 +1,52 @@
+Developing Data Products
+====
+author: Siti Nurillah Bt Mohd Fadzil
+date: 27 February 2016
+autosize: true
+
+Who would use this?
+========================================================
+
+* JohorDT have been dominant in the Super League Malaysia 2015. They are 6 points clear and have a game in hand, with just 10 games left.
+* However, they still have some tricky games coming up including Pahang and Terengganu.
+* Football fans would be able to see easily how many points Johor DT will end up on by predicting the results of their remaining games.
+* They can then see how many points their team would still require to win the league.
+* Something like this could be expanded to include all remaining Super League Malaysia fixtures.
+
+The ui.R file
+========================================================
+* It uses the fluidPage layout.
+* Then, to ensure all the information is not crammed onto one page, the tabsetPanel has been used to effectively put multiple pages all on one page.
+* Radio buttons have been used instead of a select menu. This means the user can change their choices even quicker than with select boxes.
+* You can access the source code by click https://github.com/sitinurillah/Developing_Data_Products/
+
+
+The server.R file
+========================================================
+
+* Makes use of the renderDataTable function. This means that the results can be stored in server.R as a data frame for easy R calculation.
+* Turning a radio buttin input from text into a number is not trivial and the switch function must be used.
+* You can access the source code by click https://github.com/sitinurillah/Developing_Data_Products/
+
+The Calculations
+========================================================
+
+* The points are assigned to each fixture similarly to this. Then JohorDT's total points are calculated:
+```{r}
+Pahang <- 3; Selangor <- 1; Terengganu <- 3; FeldaUnited <- 3; PDRM <- 0; LIONS <- 1; 
+PerakFA <- 3; Kelantan <- 3; Sarawak <- 1; ATM <- 3; SimeDarby <- 3
+```
+
+```{r}
+totPoints <- 63 + Pahang + Selangor + Terengganu + FeldaUnited + PDRM + LIONS + PerakFA + 
+        Kelantan + Sarawak + ATM + SimeDarby; totPoints
+```
+* And then the points another team (eg Pahang) requires to win can be calculated
+```{r}
+Pahang <- 64 + totPoints - 28; Pahang
+```
+* Currently, the numbers are all put in manually and are not fetched from the data frame. This functionality could be added as the app is further developed.
+
+Aplication on Shinyapps
+========================================================
+You can test the apllication JohorDT Predict at this link https://sitinurillah.shinyapps.io/JohorDTPredict/
